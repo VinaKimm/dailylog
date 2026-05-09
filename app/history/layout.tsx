@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/app-shell";
 
-export default function EntriesLayout({
+export default function HistoryLayout({
   children,
 }: {
   children: React.ReactNode;

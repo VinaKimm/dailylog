@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { signOut } from "@/app/auth/actions";
+import { NicknameForm } from "@/components/nickname-form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,6 +16,11 @@ export default async function ProfilePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
+  const nickname =
+    typeof user.user_metadata?.nickname === "string"
+      ? (user.user_metadata.nickname as string)
+      : "";
+
   const { count } = await supabase
     .from("entries")
     .select("id", { count: "exact", head: true });
@@ -27,6 +33,10 @@ export default async function ProfilePage() {
           Account details and stats.
         </p>
       </header>
+
+      <section className="flex flex-col gap-4 rounded-md border p-5">
+        <NicknameForm initial={nickname} />
+      </section>
 
       <section className="flex flex-col gap-4 rounded-md border p-5">
         <Field label="Email" value={user.email ?? "—"} />

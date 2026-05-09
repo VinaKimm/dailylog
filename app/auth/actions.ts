@@ -42,14 +42,27 @@ export async function signUp(
     return { error: "Passwords do not match." };
   }
 
-  const origin = (await headers()).get("origin") ?? "";
+  const headerStore = await headers();
+  // Origin can be missing on same-site Server Action POSTs; fall back to
+  // host + forwarded proto so the redirect URL we hand to Supabase is
+  // always absolute. If both are missing (rare), drop emailRedirectTo and
+  // let Supabase use the project's Site URL.
+  const origin =
+    headerStore.get("origin") ??
+    (() => {
+      const host = headerStore.get("host");
+      if (!host) return "";
+      const proto = headerStore.get("x-forwarded-proto") ?? "http";
+      return `${proto}://${host}`;
+    })();
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: `${origin}/auth/confirm?next=/entries`,
-    },
+    options: origin
+      ? { emailRedirectTo: `${origin}/auth/confirm?next=/entries` }
+      : undefined,
   });
 
   if (error) {

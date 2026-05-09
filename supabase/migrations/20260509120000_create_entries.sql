@@ -13,10 +13,12 @@ create table if not exists public.entries (
 create index if not exists entries_user_id_created_at_idx
     on public.entries (user_id, created_at desc);
 
--- Keep updated_at fresh on every UPDATE.
+-- Keep updated_at fresh on every UPDATE. Lock search_path per Supabase
+-- linter rule 0011 (function_search_path_mutable).
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 begin
     new.updated_at = now();

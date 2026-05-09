@@ -34,6 +34,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# MCP — never commit live PAT
+.mcp.json
+
 # vercel
 .vercel
 

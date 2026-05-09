@@ -8,7 +8,7 @@ Built as the Capstone project for Claude Code + Skills + Supabase MCP.
 
 ## Live URL
 
-`https://YOUR-DAILYLOG.vercel.app` — replace once Vercel finishes the deploy.
+**https://dailylog-cyan.vercel.app**
 
 ## Stack
 
